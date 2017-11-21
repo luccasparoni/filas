@@ -23,6 +23,7 @@ typedef struct banco{
   double temp_med;
   double temp_max;
   double tempo_global;
+  int atendidos;
 }BANCO;
 
 BANCO* criar_banco(int NUM_C);

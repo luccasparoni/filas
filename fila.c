@@ -8,6 +8,7 @@ BANCO* criar_banco(int NUM_C){
   banco->caixas =(CLIENTE**) malloc(sizeof(CLIENTE*) * NUM_C);
   banco->temp_med = 0;
   banco->temp_max = 0;
+  banco->atendidos = 0;
   int i;
   for(i=0; i<NUM_C;i++){
     banco->filas[i] = criar_fila(NUM_C);
@@ -164,19 +165,21 @@ void chama_prox_cl_caso_2(BANCO* banco, FILA* fila, int NUM_C){
         if(banco->caixas[i] == NULL){
             banco->caixas[i] = fila->primeiro_c;
             fila->primeiro_c = fila->primeiro_c->prox_c;
+            //banco->caixas[i]->prox_c = NULL;
         }
         else if(banco->caixas[i]->t_atendimento == 0){
             remove_cliente = banco->caixas[i];
             banco->caixas[i] = fila->primeiro_c;
             apagar_cliente(&(remove_cliente));
+            banco->atendidos++;
             if(fila->primeiro_c->prox_c != NULL)
                 fila->primeiro_c = fila->primeiro_c->prox_c;
         }
         banco->caixas[i]->t_espera = banco->tempo_global - banco->caixas[i]->t_chegada;
         banco->t_espera_total+= banco->caixas[i]->t_espera;
-        if(banco->caixas[i]->t_espera > banco->temp_max)
+        if(banco->caixas[i]->t_espera > banco->temp_max){   }
             banco->temp_max = banco->caixas[i]->t_espera;
-    }
+            printf("%f\n", banco->temp_max);}
 }
 
 void atende_cliente(BANCO* banco, int NUM, int NUM_C){
@@ -195,9 +198,7 @@ void atende_cliente(BANCO* banco, int NUM, int NUM_C){
             menor_tempo = 0;
         }
     }
-    // if(menor_tempo < 0){
-    //     menor_tempo = 0;
-    // }
+
     banco->tempo_global = banco->tempo_global + menor_tempo;
     for(i = 0; i < NUM_C; i++){
         if(banco->caixas[i] != NULL){
@@ -209,11 +210,6 @@ void atende_cliente(BANCO* banco, int NUM, int NUM_C){
 void  temp_medio(BANCO* banco, int NUM){
     banco->temp_med =  banco->t_espera_total/NUM;
 }
-
-
-
-
-
 
 //aqui comecam as funçoes unicas para o caso 1
 //double inserir_cliente_caso1(BANCO* banco, CLIENTE* cliente, double t_espera_max, int NUM_C){//sempre deve receber como um dos parametros o cliente adocionado anteriormente;
